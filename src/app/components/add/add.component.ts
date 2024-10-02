@@ -7,6 +7,7 @@ import { DataService } from '../../services/data.service';
 import { PdfViewerModule } from 'ng2-pdf-viewer';
 import { FormioModule } from '@formio/angular';
 import { Formio } from 'formiojs';
+
 @Component({
   selector: 'app-add',
   standalone: true,
@@ -26,20 +27,24 @@ export class AddComponent implements AfterViewInit {
   clicked: boolean = false;
   url!: string;
   showfields: boolean = false;
+
   ngOnInit() {
     this.getpdfdata();
   }
+
   allfields = [
     { icon: 'fa fa-font', name: 'TextArea' },
     { icon: 'fa fa-circle', name: 'Radio Button' },
     { icon: 'fa fa-phone-square', name: 'Phone Number' },
     { icon: 'fa fa-check-square', name: 'Checkbox' },
-    { icon: 'fa fa-envelope', name: 'Input' }, // Add this line for Input
+    { icon: 'fa fa-envelope', name: 'Input' },
   ];
+
   field() {
     this.clicked = true;
     this.showfields = !this.showfields;
   }
+
   getpdfdata() {
     this.url = this.data.getpdf();
   }
@@ -49,7 +54,6 @@ export class AddComponent implements AfterViewInit {
   ngAfterViewInit() {
     const iframe = this.iframeElement.nativeElement;
 
-    // Wait for the iframe to load
     iframe.onload = () => {
       const iframeDocument =
         iframe.contentDocument || iframe.contentWindow.document;
@@ -58,15 +62,14 @@ export class AddComponent implements AfterViewInit {
         watermark.style.display = 'none';
       }
 
-      // Allow drop functionality inside the iframe
       iframeDocument.body.addEventListener('dragover', (event: DragEvent) => {
-        event.preventDefault(); // Allow drop
-        event.dataTransfer!.dropEffect = 'copy'; // Indicate a copy operation
+        event.preventDefault();
+        event.dataTransfer!.dropEffect = 'copy';
       });
 
       iframeDocument.body.addEventListener('drop', (event: DragEvent) => {
-        event.preventDefault(); // Prevent default handling
-        this.onDrop(event, iframeDocument); // Call the onDrop method
+        event.preventDefault();
+        this.onDrop(event, iframeDocument);
       });
     };
 
@@ -86,36 +89,35 @@ export class AddComponent implements AfterViewInit {
   }
 
   onDragStart(event: DragEvent, elementType: string) {
-    event.dataTransfer?.setData('text/plain', elementType);
+    event.dataTransfer?.setData('text/plain', 'new:' + elementType);
     event.dataTransfer!.dropEffect = 'copy';
   }
+
   onDrop(event: DragEvent, iframeDocument: Document) {
-    const draggedElementData = event.dataTransfer?.getData('text/plain');
-    console.log(`Dropped: ${draggedElementData}`);
+    event.preventDefault();
+    const data = event.dataTransfer?.getData('text/plain');
+    if (!data) return;
 
-    const iframeRect = this.iframeElement.nativeElement.getBoundingClientRect();
-
-    const iframeScrollX =
+    const rect = iframeDocument.body.getBoundingClientRect();
+    const scrollLeft =
       iframeDocument.documentElement.scrollLeft ||
       iframeDocument.body.scrollLeft;
-    const iframeScrollY =
+    const scrollTop =
       iframeDocument.documentElement.scrollTop || iframeDocument.body.scrollTop;
 
-    const scaleX =
-      iframeDocument.documentElement.clientWidth /
-      this.iframeElement.nativeElement.offsetWidth;
-    const scaleY =
-      iframeDocument.documentElement.clientHeight /
-      this.iframeElement.nativeElement.offsetHeight;
+    const x = event.clientX - rect.left + scrollLeft;
+    const y = event.clientY - rect.top + scrollTop;
 
-    const x = (event.clientX - iframeRect.left + iframeScrollX) / scaleX;
-    const y = (event.clientY - iframeRect.top + iframeScrollY) / scaleY;
-
-    console.log(`Calculated Position - X: ${x}, Y: ${y}`);
-
-    // Create a new input box based on the dragged element type
-    if (draggedElementData) {
-      this.createDraggableInput(iframeDocument, draggedElementData, x, y);
+    if (data.startsWith('new:')) {
+      const type = data.substring(4); // Remove 'new:' prefix
+      this.createDraggableInput(iframeDocument, type, x, y);
+    } else {
+      // This is an existing element being moved
+      const draggedElement = iframeDocument.getElementById(data);
+      if (draggedElement) {
+        draggedElement.style.left = `${x}px`;
+        draggedElement.style.top = `${y}px`;
+      }
     }
   }
 
@@ -125,17 +127,14 @@ export class AddComponent implements AfterViewInit {
     x: number,
     y: number
   ) {
-    const container = iframeDocument.createElement('div'); // Create a container for each input
+    const container = iframeDocument.createElement('div');
     container.style.position = 'absolute';
     container.style.left = `${x}px`;
     container.style.top = `${y}px`;
     container.style.width = '150px';
     container.style.height = 'auto';
-
     container.setAttribute('draggable', 'true');
     container.id = `input-container-${Date.now()}`;
-
-    let inputElement: HTMLElement;
 
     switch (type) {
       case 'Phone Number':
@@ -143,16 +142,16 @@ export class AddComponent implements AfterViewInit {
           'input'
         ) as HTMLInputElement;
         phoneInput.setAttribute('type', 'tel');
-        phoneInput.placeholder = 'Phone Number'; // Use the placeholder property
-        container.appendChild(phoneInput); // Append input to the container
+        phoneInput.placeholder = 'Phone Number';
+        container.appendChild(phoneInput);
         break;
 
       case 'TextArea':
         const textAreaInput = iframeDocument.createElement(
           'textarea'
         ) as HTMLTextAreaElement;
-        textAreaInput.placeholder = 'Enter text...'; // Use the placeholder property
-        container.appendChild(textAreaInput); // Append textarea to the container
+        textAreaInput.placeholder = 'Enter text...';
+        container.appendChild(textAreaInput);
         break;
 
       case 'Checkbox':
@@ -160,18 +159,13 @@ export class AddComponent implements AfterViewInit {
           'input'
         ) as HTMLInputElement;
         checkboxInput.setAttribute('type', 'checkbox');
-
         const checkboxLabelInput = iframeDocument.createElement(
           'input'
         ) as HTMLInputElement;
         checkboxLabelInput.setAttribute('type', 'text');
         checkboxLabelInput.setAttribute('placeholder', 'Enter label...');
-
-        // Append checkbox and label input to the container
         container.appendChild(checkboxInput);
         container.appendChild(checkboxLabelInput);
-
-        // Event listener for the checkbox label
         checkboxLabelInput.addEventListener(
           'keydown',
           (event: KeyboardEvent) => {
@@ -190,18 +184,13 @@ export class AddComponent implements AfterViewInit {
         ) as HTMLInputElement;
         radioInput.setAttribute('type', 'radio');
         radioInput.setAttribute('name', `radioGroup-${Date.now()}`);
-
         const radioLabelInput = iframeDocument.createElement(
           'input'
         ) as HTMLInputElement;
         radioLabelInput.setAttribute('type', 'text');
         radioLabelInput.setAttribute('placeholder', 'Enter option...');
-
-        // Append radio button and label input to the container
         container.appendChild(radioInput);
         container.appendChild(radioLabelInput);
-
-        // Event listener for the radio button label
         radioLabelInput.addEventListener('keydown', (event: KeyboardEvent) => {
           if (event.key === 'Enter') {
             const label = iframeDocument.createElement('label');
@@ -215,9 +204,9 @@ export class AddComponent implements AfterViewInit {
         const anyInput = iframeDocument.createElement(
           'input'
         ) as HTMLInputElement;
-        anyInput.setAttribute('type', 'Input');
-        anyInput.placeholder = 'Enter Input...'; // Use the placeholder property
-        container.appendChild(anyInput); // Append anyInput input to the container
+        anyInput.setAttribute('type', 'text');
+        anyInput.placeholder = 'Enter Input...';
+        container.appendChild(anyInput);
         break;
 
       default:
@@ -225,9 +214,8 @@ export class AddComponent implements AfterViewInit {
         return;
     }
 
-    // Append the container to the iframe document body
     iframeDocument.body.appendChild(container);
-    this.makeElementDraggable(container, iframeDocument); // Make the entire container draggable
+    this.makeElementDraggable(container, iframeDocument);
   }
 
   makeElementDraggable(element: HTMLElement, iframeDocument: Document) {
@@ -241,7 +229,7 @@ export class AddComponent implements AfterViewInit {
     });
 
     iframeDocument.body.addEventListener('dragover', (event: DragEvent) => {
-      event.preventDefault(); // Allow drop
+      event.preventDefault();
     });
 
     iframeDocument.body.addEventListener('drop', (event: DragEvent) => {
