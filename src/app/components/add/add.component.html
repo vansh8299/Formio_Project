@@ -1,0 +1,217 @@
+<div class="top">
+  <div class="inputs">
+    <div class="title">
+      <label
+        >Title<span
+          style="
+            color: rgb(255, 29, 29);
+            font-size: 20px;
+            font-weight: 700;
+            margin-left: 2px;
+          "
+          >*</span
+        ></label
+      >
+      <input
+        type="text"
+        class="form-control"
+        placeholder="Enter the form title"
+        required
+      />
+    </div>
+    <div class="name">
+      <label
+        >Name<span
+          style="
+            color: rgb(255, 29, 29);
+            font-size: 20px;
+            font-weight: 700;
+            margin-left: 2px;
+          "
+          >*</span
+        ></label
+      >
+      <input
+        type="text"
+        class="form-control"
+        placeholder="Enter the form machine name"
+        required
+      />
+    </div>
+    <div class="api">
+      <div class="link">
+        <label
+          >Api Path<span
+            style="
+              color: rgb(255, 29, 29);
+              font-size: 20px;
+              font-weight: 700;
+              margin-left: 2px;
+            "
+            >*</span
+          ></label
+        >
+        <input
+          type="text"
+          class="form-control data"
+          placeholder="https://mcawlixxhqwakav.form.io/"
+          readonly
+        />
+      </div>
+      <div class="example">
+        <input
+          type="text"
+          class="form-control"
+          placeholder="example"
+          required
+        />
+      </div>
+    </div>
+  </div>
+  <div class="section">
+    <p style="font-weight: 480">
+      Display as <span style="color: green">PDF</span>
+      <svg
+        [matMenuTriggerFor]="menu"
+        xmlns="http://www.w3.org/2000/svg"
+        width="10"
+        height="10"
+        fill="currentColor"
+        class="bi bi-caret-down-fill"
+        viewBox="0 0 16 16"
+        style="color: green; margin-left: 3px"
+      >
+        <path
+          d="M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z"
+        />
+      </svg>
+    </p>
+    <mat-menu #menu="matMenu">
+      <button mat-menu-item>
+        <mat-icon>dialpad</mat-icon>
+        <span>Redial</span>
+      </button>
+      <button mat-menu-item disabled>
+        <mat-icon>voicemail</mat-icon>
+        <span>Check voice mail</span>
+      </button>
+      <button mat-menu-item>
+        <mat-icon>notifications_off</mat-icon>
+        <span>Disable alerts</span>
+      </button>
+    </mat-menu>
+  </div>
+  <div class="mid-section">
+    <div class="left">
+      <div class="main">
+        <input type="text" class="form-control" placeholder="Search field(s)" />
+        <div class="pdf-fields">
+          <div
+            class="fields"
+            (click)="field()"
+            [ngClass]="clicked ? 'colorchange' : ''"
+          >
+            <span style="text-align: center; color: black">PDF Fields</span>
+          </div>
+        </div>
+        <div class="all-fields" [ngClass]="showfields ? 'show' : ''">
+          @for(f of allfields ; track f){
+          <div class="fieldnames draggable-element" draggable="true" (dragstart)="onDragStart($event, f.name)">
+            <i
+              class="{{ f.icon }}"
+              aria-hidden="true"
+              style="margin-right: 7px"
+            ></i>
+            <span>{{ f.name }}</span>
+          </div>
+          }
+        </div>
+        <div class="pdf-fields">
+          <div class="fields">
+            <span style="text-align: center">Existing Resource Fields</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="right">
+      <div
+        style="
+          width: 100%;
+          height: 95%;
+          margin-bottom: 5px;
+          padding: 15px 30px;
+          background-size: 20px 20px;
+          background-image: -webkit-repeating-linear-gradient(
+            -45deg,
+            rgb(51, 50, 50),
+            rgb(51, 50, 50) 1px,
+            transparent 1px,
+            transparent 14px
+          );
+          background-image: -moz-repeating-linear-gradient(
+            -45deg,
+            rgb(51, 50, 50),
+            rgb(51, 50, 50) 1px,
+            transparent 1px,
+            transparent 14px
+          );
+          background-image: -o-repeating-linear-gradient(
+            -45deg,
+            rgb(51, 50, 50),
+            rgb(51, 50, 50) 1px,
+            transparent 1px,
+            transparent 14px
+          );
+          background-image: repeating-linear-gradient(
+            -45deg,
+            rgb(51, 50, 50),
+            rgb(51, 50, 50) 1px,
+            transparent 1px,
+            transparent 14px
+          );
+          background-color: grey;
+        "
+      >
+
+          <iframe
+            #iframeElement
+            src="\aspose.html"
+            class="html-iframe"
+            style="width: 100%; height: 100% ; z-index: 1; background-color: white;"
+          ></iframe>
+      
+
+          <div id="formioDiv"></div>
+
+
+      </div>
+      <button
+        class="btn btn-success"
+        style="
+          background-color: #6ab445;
+          border-color: #6ab445;
+          color: white;
+          margin-top: 5px;
+        "
+      >
+        Submit
+      </button>
+    </div>
+  </div>
+  <div>
+    <button
+      class="btn btn-success"
+      style="
+        background-color: #6ab445;
+        border-color: #6ab445;
+        color: white;
+        position: fixed;
+        z-index: 1;
+        bottom: 55px;
+        right: 30px;
+      "
+    >
+      Create Form
+    </button>
+  </div>
+</div>

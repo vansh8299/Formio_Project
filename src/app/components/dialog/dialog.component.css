@@ -1,0 +1,69 @@
+.top-main {
+  display: flex;
+  justify-content: space-between;
+
+}
+.upload {
+  font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-weight: 200;
+}
+.uploadingpdf {
+    width: 100%;
+    height: 40px;
+    background-color: white;
+    margin-bottom: 20px;
+    border-radius: 8px;
+  
+}
+.pdf{
+  display: flex;
+    justify-content: center;
+    align-items: center;
+    padding-top: 5px;
+}
+.loading{
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding-top: 5px;
+}
+.uploadingpdf:hover{
+    background-color: rgb(214, 212, 212);
+    cursor: pointer;
+}
+.top {
+  background-color: rgb(235, 235, 235);
+  padding: 15px 20px;
+}
+.show{
+    display: none;
+}
+
+/* .file{
+    width: 100%;
+    height: 100%;
+} */
+
+.bar{
+  display: none;
+}
+.loader::after {
+  content: "";
+  width: 100%;
+  height: 100%;
+  border: 15px solid #dddddd;
+  border-top-color: #009578;
+  border-radius: 50%;
+  animation: loading 0.75s ease infinite;
+}
+
+@keyframes loading {
+  from {
+    transform: rotate(0turn);
+  }
+  to {
+    transform: rotate(1turn);
+  }
+}

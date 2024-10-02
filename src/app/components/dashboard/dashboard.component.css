@@ -1,0 +1,44 @@
+.main {
+  height: 100%;
+  width: 100%;
+  background-color: rgb(241, 241, 241);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  row-gap: 20px;
+  padding-top: 20px;
+}
+.top-heading {
+  font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-weight: 200;
+}
+.pdfimage {
+  width: 100%;
+  height: 300px;
+}
+.pdf-heading {
+  font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-weight: 300;
+}
+.pdf-box {
+  width: 350px;
+  height: 480px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 10px 20px 0px 20px;
+}
+.para {
+  text-align: center;
+  font-family: "Roboto", "Open Sans", serif;
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.4;
+  margin-bottom: 1rem;
+}
+.pdf-box:hover{
+    cursor: pointer;
+    border-radius: 10px;
+    background-color: rgb(201, 198, 198);
+}
+
